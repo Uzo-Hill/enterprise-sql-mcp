@@ -191,7 +191,7 @@ RELATIONSHIPS:
 
 <!-- 🖼️ INSERT ER DIAGRAM / SCREENSHOT OF SHOW TABLES OUTPUT HERE -->
 
-![Database Schema](screenshots/show-tables.png)
+![Database Schema](https://github.com/Uzo-Hill/enterprise-sql-mcp/blob/main/project_image/tables.PNG)
 
 5 relational tables, generated as realistic synthetic data:
 
@@ -291,17 +291,18 @@ Restart Claude Desktop, then check **Settings → Developer** — `retail-sql` s
 
 ## 💬 Example Usage
 
-<!-- 🖼️ INSERT SCREENSHOT / GIF OF CLAUDE DESKTOP CONVERSATION HERE -->
-
 **Sample questions this project can answer:**
 
 - "Which product generated the highest revenue?"
+
+![Response](https://github.com/Uzo-Hill/enterprise-sql-mcp/blob/main/project_image/Query1_Top_Product.PNG)
+  
 - "Which customer spent the most?"
 - "Which category is declining over time?"
 - "What's the average order value?"
 
-**Sample real output:**
-> "Whole Grain Pasta generated the highest revenue at $45,206.32, followed by Electric Rice Cooker ($39,925.96) and Watts Kitchen Knife Set ($36,520.91)."
+![Response](https://github.com/Uzo-Hill/enterprise-sql-mcp/blob/main/project_image/Query2_Order_Value.PNG)
+
 
 ---
 
