@@ -39,70 +39,100 @@ In this project:
 
 ## 🏗️ Architecture
 
- ```
+```
                     ENTERPRISE SQL MCP
-        Natural Language to Safe SQL — Architecture
+           Natural Language to Safe SQL Architecture
+══════════════════════════════════════════════════════════════════════
 
-═══════════════════════════════════════════════════════════
+                         ┌──────────────────────────────┐
+                         │            USER              │
+                         │ "Which product generated     │
+                         │  the highest revenue?"       │
+                         └──────────────┬───────────────┘
+                                        │
+                                        ▼
+                  ┌──────────────────────────────────────┐
+                  │         CLAUDE DESKTOP (Host)        │
+                  │ • Understands user intent            │
+                  │ • Selects the appropriate MCP tool   │
+                  └──────────────┬───────────────────────┘
+                                 │
+                                 ▼
+                  ┌──────────────────────────────────────┐
+                  │         MCP PROTOCOL (stdio)         │
+                  │ • Tool discovery                     │
+                  │ • Tool invocation                    │
+                  │ • Request / Response transport       │
+                  └──────────────┬───────────────────────┘
+                                 │
+                                 ▼
+        ┌────────────────────────────────────────────────────────────┐
+        │                 server.py (MCP Server)                     │
+        │                                                            │
+        │  Registered Tools                                          │
+        │  ───────────────────────────────────────────────────────   │
+        │  ✓ get_schema()                                            │
+        │      • Returns database schema                             │
+        │      • Lists tables and columns                            │
+        │                                                            │
+        │  ✓ run_query(sql)                                          │
+        │      • Validates SQL                                       │
+        │      • Executes approved queries                           │
+        │      • Returns JSON results                                │
+        │                                                            │
+        │  SQL Safety Layer                                          │
+        │      ✓ SELECT statements only                              │
+        │      ✓ Blocks DELETE, UPDATE, DROP, INSERT                 │
+        │      ✓ Prevents stacked statements (;)                     │
+        │      ✓ Automatically applies row LIMIT                     │
+        └──────────────────────┬─────────────────────────────────────┘
+                               │
+                               │  mcp_reader
+                               │  (Read-only MySQL User)
+                               ▼
+                  ┌──────────────────────────────────────┐
+                  │         MySQL Database               │
+                  │          retail_mcp                  │
+                  │                                      │
+                  │  • categories                        │
+                  │  • products                          │
+                  │  • customers                         │
+                  │  • orders                            │
+                  │  • order_items                       │
+                  └──────────────┬───────────────────────┘
+                                 │
+                                 │ JSON Result Set
+                                 ▼
+                  ┌──────────────────────────────────────┐
+                  │         CLAUDE DESKTOP (Host)        │
+                  │ • Interprets SQL results             │
+                  │ • Explains findings                  │
+                  │ • Responds in natural language       │
+                  └──────────────┬───────────────────────┘
+                                 │
+                                 ▼
+                         ┌──────────────────────────────┐
+                         │            USER              │
+                         │ "Whole Grain Pasta generated │
+                         │ the highest revenue at       │
+                         │ $45,206.32."                 │
+                         └──────────────────────────────┘
 
-  USER
-   │
-   │  "Which product generated the highest revenue?"
-   ▼
-┌─────────────────────────────────────────┐
-│           CLAUDE DESKTOP (Host)          │
-│   Reads question, reasons about intent   │
-└─────────────────────────────────────────┘
-   │
-   │  MCP Client (built into host)
-   ▼
-┌─────────────────────────────────────────┐
-│         MCP PROTOCOL (stdio)             │
-│   Tool discovery + tool call requests    │
-└─────────────────────────────────────────┘
-   │
-   ▼
-┌─────────────────────────────────────────┐
-│          server.py (MCP Server)          │
-│                                           │
-│  ① get_schema()                          │
-│     → returns tables & columns           │
-│                                           │
-│  ② run_query(sql)                        │
-│     → validate_sql() safety layer:       │
-│        • SELECT-only                     │
-│        • no stacked statements (;)       │
-│        • blocks DELETE/DROP/UPDATE/etc.  │
-│        • auto row LIMIT                  │
-└─────────────────────────────────────────┘
-   │
-   │  mcp_reader (SELECT-only DB user)
-   ▼
-┌─────────────────────────────────────────┐
-│         MySQL — retail_mcp DB            │
-│                                           │
-│   categories → products → order_items    │
-│   customers  → orders   ──────┘          │
-└─────────────────────────────────────────┘
-   │
-   │  JSON result rows
-   ▼
-┌─────────────────────────────────────────┐
-│           CLAUDE DESKTOP (Host)          │
-│   Explains result back in plain English  │
-└─────────────────────────────────────────┘
-   │
-   ▼
-  USER
-   "Whole Grain Pasta generated the highest
-    revenue at $45,206.32..."
+══════════════════════════════════════════════════════════════════════
+SECURITY LAYERS
 
-═══════════════════════════════════════════════════════════
-SAFETY: Two layers block destructive queries —
-1) Model judgment (Claude declines risky requests)
-2) Code-level validator (deterministic, cannot be bypassed)
+1. Claude Desktop
+   • Declines unsafe or destructive requests
+
+2. server.py Validation
+   • Deterministic SQL validation
+   • Read-only (SELECT) enforcement
+   • Cannot be bypassed by the model
+
+══════════════════════════════════════════════════════════════════════
+                   
 ``` 
-<!-- Suggested: a diagram showing User → Claude Desktop → MCP Client → server.py → MySQL (mcp_reader) -->
+
 
 **Flow:**
 1. User asks a question in plain English inside Claude Desktop
