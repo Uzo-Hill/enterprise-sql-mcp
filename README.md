@@ -293,16 +293,17 @@ Restart Claude Desktop, then check **Settings → Developer** — `retail-sql` s
 
 **Sample questions this project can answer:**
 
-- "Which product generated the highest revenue?"
+- Which product generated the highest revenue?
 
 ![Response](https://github.com/Uzo-Hill/enterprise-sql-mcp/blob/main/project_image/Query1_Top_Product.PNG)
-  
-- "Which customer spent the most?"
-- "Which category is declining over time?"
-- "What's the average order value?"
+ 
+- "What's the average order value?
 
 ![Response](https://github.com/Uzo-Hill/enterprise-sql-mcp/blob/main/project_image/Query2_Order_Value.PNG)
 
+- Which category is declining over time?
+
+![Response](https://github.com/Uzo-Hill/enterprise-sql-mcp/blob/main/project_image/Query3.PNG)
 
 ---
 
