@@ -272,6 +272,27 @@ def validate_sql(sql: str) -> str:          # Standardizes the string by strippi
 
 ---
 
+## 🏢 Production Considerations (Beyond This Project's Scope)
+
+The safety measures in this project — a read-only database user and a SQL validation layer — are genuine, meaningful safeguards, not just theoretical ones. But they represent an MVP security layer suitable for a learning project with synthetic data. A real company deployment connecting an AI assistant to a production database would need additional layers:
+
+| Area | Current State (This Project) | What Production Would Require |
+|---|---|---|
+| **Credentials** | Hardcoded in `server.py` | Loaded from environment variables or a secrets manager (e.g. AWS Secrets Manager, HashiCorp Vault) — never in source code |
+| **Access scope** | Read-only across all tables | Column- and table-level restrictions, so sensitive data (salaries, PII, financials etc) isn't queryable just because a table exists |
+| **Data residency** | N/A (synthetic data) | Legal/compliance review of what data categories may pass through a third-party AI provider, considering regulations like GDPR or Nigeria's NDPR |
+| **Authentication** | Anyone with local Claude Desktop access | Per-user authentication tied to the MCP server, with role-based access control (a sales rep and a CFO shouldn't see the same data) |
+| **Audit trail** | None | Full query logging - who asked what, when, and how many rows were returned, for accountability and security monitoring |
+| **Prompt injection** | Not addressed | Awareness that data *returned* by queries (e.g. a product name or note field) could theoretically contain manipulative text — an active, unsolved area of AI security research |
+
+### Why this matters
+
+This project intentionally focuses on demonstrating **correct MCP architecture and query-level safety** — the foundational layer everything else builds on. Understanding what's *missing* for a production deployment is just as important as building what's *present*: it shows the difference between a working demo and a system ready for real company data.
+
+*Several of the technical gaps above (credential management, access control, audit logging) are tracked as concrete next steps in the [Future Improvements](#-future-improvements) section.*
+
+---
+
 ## 🚀 Setup & Installation
 
 ### 1. Clone the repository
@@ -361,7 +382,10 @@ Restart Claude Desktop, then check **Settings → Developer** — `retail-sql` s
 
 - Add a chart-generation tool so results render as visuals instead of raw text/JSON
 - Extend the schema with `warehouses` and `inventory` tables to support stock-level questions
-- Add a query audit log tool for traceability
+- Add a query audit log tool for traceability — who asked what, when, and how many rows returned
+- Move database credentials out of source code into environment variables or a secrets manager
+- Implement per-user authentication with role-based access control, so different roles see different data
+- Add column-level access restrictions to protect sensitive fields even within otherwise-accessible tables
 - Containerize the full stack (MySQL + server) with Docker Compose for one-command setup
 - Deploy as a remote MCP server (HTTP/SSE transport) instead of local stdio only
 
@@ -372,6 +396,10 @@ Restart Claude Desktop, then check **Settings → Developer** — `retail-sql` s
 **Chukwudum Hillary Uzoh**
 
 Data Scientist & AI Engineer
+
+- GitHub: https://github.com/Uzo-Hill
+- LinkedIn: https://www.linkedin.com/in/hillaryuzoh/
+- Email: uzoh.hillary@gmail.com
 
 
 
