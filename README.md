@@ -156,6 +156,46 @@ SECURITY LAYERS
 
 ---
 
+### Schema Overview
+
+![Show Tables](https://github.com/Uzo-Hill/enterprise-sql-mcp/blob/main/project_image/tables.PNG)
+
+5 relational tables, generated as realistic synthetic data:
+
+| Table | Description |
+|---|---|
+| `categories` | Product category groupings |
+| `products` | 150 products, tied to categories, with cost & unit price |
+| `customers` | 500 customer records |
+| `orders` | 1,000 orders across a 2-year period |
+| `order_items` | Line items linking orders to products |
+
+### Sample Data
+
+**categories**
+
+![Categories Table](https://github.com/Uzo-Hill/enterprise-sql-mcp/blob/main/project_image/Table_Categories.PNG)
+
+**products**
+
+![Products Table](https://github.com/Uzo-Hill/enterprise-sql-mcp/blob/main/project_image/Table_Products.PNG)
+
+**customers**
+
+![Customers Table](https://github.com/Uzo-Hill/enterprise-sql-mcp/blob/main/project_image/Table_Customers.PNG)
+
+**orders**
+
+![Orders Table](https://github.com/Uzo-Hill/enterprise-sql-mcp/blob/main/project_image/Table_Orders.PNG)
+
+**order_items**
+
+![Order Items Table](https://github.com/Uzo-Hill/enterprise-sql-mcp/blob/main/project_image/order_items.PNG)
+
+*order_items links orders to products — each row represents one product line within an order.*
+
+---
+
 ## 📊 Database Schema
 
 ```
@@ -218,20 +258,6 @@ RELATIONSHIPS:
 - One order has many order_items
 - One customer places many orders
 ```
-
-<!-- 🖼️ INSERT ER DIAGRAM / SCREENSHOT OF SHOW TABLES OUTPUT HERE -->
-
-![Database Schema](https://github.com/Uzo-Hill/enterprise-sql-mcp/blob/main/project_image/tables.PNG)
-
-5 relational tables, generated as realistic synthetic data:
-
-| Table | Description |
-|---|---|
-| `categories` | Product category groupings |
-| `products` | 150 products, tied to categories, with cost & unit price |
-| `customers` | 500 customer records |
-| `orders` | 1,000 orders across a 2-year period |
-| `order_items` | Line items linking orders to products |
 
 ---
 
